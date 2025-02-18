@@ -16,6 +16,7 @@ keyboard.block_key('alt')
 
 mixer.init()
 root = Tk()
+root.iconbitmap("icon.ico")
 root.title("Screen")
 root.attributes("-fullscreen", True)
 root.protocol("WM_DELETE_WINDOW", lambda: None)
